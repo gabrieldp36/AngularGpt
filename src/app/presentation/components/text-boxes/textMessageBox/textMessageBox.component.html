@@ -1,0 +1,30 @@
+<form
+    [formGroup]="myForm"
+    (ngSubmit)="handleSubmit()"
+    class="flex flex-row items-center h-16 rounded-xl w-full px-4"
+>
+    <div class="flex-grow">
+        <div class="relative w-full">
+            <input
+                formControlName="prompt"
+                type="text"
+                autofocus
+                class="flex w-full border rounded-xl pl-4 min-h-10 input-bg-gray"
+                [placeholder]="placeholder"
+                [autocomplete]="disableCorrection ? 'on' : 'off'"
+                [spellcheck]="disableCorrection ? 'on' : 'off'"
+            />
+        </div>
+    </div>
+
+    <div class="ml-4">
+        <button 
+            class="btn-primary" 
+            type="submit"
+            [disabled]="myForm.invalid"
+        >
+            <span class="mr-2">Enviar</span>
+            <i class="fa-regular fa-paper-plane"></i>
+        </button>
+    </div>
+</form>

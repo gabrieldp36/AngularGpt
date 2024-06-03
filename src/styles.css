@@ -1,1 +1,122 @@
-/* You can add global styles to this file, and also import other style files */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+  background-color: #000000;
+  color: white;
+  font-family: "Open Sans", sans-serif;
+}
+
+h1 {
+  @apply text-3xl font-bold mb-4;
+}
+
+p {
+  @apply mb-4;
+}
+
+ul {
+  @apply list-disc list-inside;
+}
+
+strong {
+  @apply font-bold text-indigo-400 text-xl;
+}
+
+em {
+  @apply italic text-pink-500;
+}
+
+.btn-primary {
+  @apply bg-indigo-500 text-white font-bold py-2 px-4 rounded-xl hover:bg-indigo-700 transition-all duration-200 ease-in-out;
+}
+
+.btn-primary:disabled {
+  @apply bg-indigo-500 text-white font-bold py-2 px-4 rounded-xl opacity-50 cursor-not-allowed;
+}
+
+.chat-container {
+  @apply flex flex-col flex-auto flex-shrink-0 rounded-2xl bg-white bg-opacity-5 h-[calc(100vh-90px)] p-4 w-[calc(100vw-500px)];
+}
+
+.chat-messages {
+  @apply flex flex-col h-full overflow-x-auto mb-4 overflow-scroll;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.overflow-scroll {
+  overflow: scroll;
+}
+
+.input-bg-gray {
+  background-color: #1c1c1c;
+  border-color: #1c1c1c;
+}
+
+.input-bg-gray:focus {
+  outline: 2px solid rgb(99 102 241);
+}
+
+.color-green {
+  color: #69efae;
+}
+
+/* Animations */
+
+.fade-in {
+  animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/*Scroll Bar*/
+
+*::-webkit-scrollbar {
+  width: 8px;
+  background: transparent;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 20px;
+}
+
+*::-webkit-scrollbar-track:hover {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-track:active {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #5e666d;
+  border: 3px solid #5e666d;
+  border-radius: 20px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: #495057;
+  border-color: #495057;
+}
+
+*::-webkit-scrollbar-thumb:active {
+  background-color: #363b41;
+  border-color: #363b41;
+}
+
+*::-webkit-scrollbar-corner {
+  background-color: transparent;
+}
