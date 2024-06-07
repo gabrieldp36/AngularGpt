@@ -29,6 +29,10 @@ em {
   @apply italic text-pink-500;
 }
 
+ul {
+  list-style: none;
+}
+
 .btn-primary {
   @apply bg-indigo-500 text-white font-bold py-2 px-4 rounded-xl hover:bg-indigo-700 transition-all duration-200 ease-in-out;
 }
@@ -64,6 +68,10 @@ em {
 
 .color-green {
   color: #69efae;
+}
+
+.max-width-70 {
+  max-width: 70%;
 }
 
 /* Animations */
