@@ -25,8 +25,12 @@ export default class ProsConsStreamPageComponent {
   public isLoading = signal(false);
   public openAiService = inject(OpenAiService);
   public cdRef = inject(ChangeDetectorRef)
+  public abortSignal = new AbortController();
 
   public async handleMessage(prompt: string) {
+    // En caso de estar una petición en curso y que el usuario vuelva a enviar una, cancelamos la anterior petición.
+    this.abortSignal.abort();
+    this.abortSignal = new AbortController();
     // Actualizamos el estado del loading para indicar que se está cargando la respuesta del backend.
     this.isLoading.set(true);
     // Hacemos un update de los mensajes para agregar el texto enviado por el usuario.
@@ -42,7 +46,7 @@ export default class ProsConsStreamPageComponent {
     this.cdRef.detectChanges();
     this.scrollToBottom('smooth');
     // En la constante stream tenemos nuestro async generator.
-    const stream = this.openAiService.prosConsDiscusserStream(prompt);
+    const stream = this.openAiService.prosConsDiscusserStream(prompt, this.abortSignal.signal);
     setTimeout( async () => {
       // Con el for await vamos consumiendo todos los valores que emite nuestro async generator.
       for await (const text of stream) {

@@ -1,6 +1,6 @@
 import { environment } from "environments/environment";
 
-export async function* prosConsStreamUseCase (prompt: string) {
+export async function* prosConsStreamUseCase (prompt: string, abortSignal: AbortSignal) {
     try {
         const resp = await fetch(`${environment.backendApi}/pros-cons-discusser-stream`, {
             method: 'POST',
@@ -8,6 +8,7 @@ export async function* prosConsStreamUseCase (prompt: string) {
             headers: {
                 'Content-Type': 'application/json'
             },
+            signal: abortSignal
         });
         if(!resp.ok) throw new Error('No se ha podido realizar la comparación.');
     
@@ -35,7 +36,7 @@ export async function* prosConsStreamUseCase (prompt: string) {
         return text; // Aquí emitimos cómo valor final el texto completo para finalizar la generación.
 
     } catch (error) {
-        console.error(error);
-        return null
+        if ( !(error instanceof DOMException) ) { console.error(error) };
+        return null;
     };
 };
