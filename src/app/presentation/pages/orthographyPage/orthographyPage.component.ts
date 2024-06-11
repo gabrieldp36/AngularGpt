@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, ViewChild, inject, signal, ChangeDetectorRef } from '@angular/core';
 import { GptMessageComponent, GptMessageOrthographyComponent, MyMessageComponent, TextMessageBoxComponent, TypingLoaderComponent } from '@components/index';
 import { Message } from '@interfaces/message.interface';
 import { OpenAiService } from 'app/presentation/services/openai.service';
@@ -20,9 +20,12 @@ import { OpenAiService } from 'app/presentation/services/openai.service';
 })
 export default class OrthographyPageComponent {
 
+  @ViewChild('divMensajes') divMensajes!: ElementRef<HTMLDivElement>;
+
   public messages = signal<Message[]>([]);
   public isLoading = signal(false);
   public openAiService = inject(OpenAiService);
+  public cdRef = inject(ChangeDetectorRef)
 
   public handleMessage(prompt: string): void {
     // Actualizamos el estado del loading para indicar que se está cargando la respuesta del backend.
@@ -37,6 +40,8 @@ export default class OrthographyPageComponent {
         text: prompt
       }
     ]);
+    this.cdRef.detectChanges();
+    this.scrollToBottom();
     // Realizamos la consulta al backend para obtener la corrección ortográfica de la IA.
     this.openAiService.orthographyCheck(prompt)
     .subscribe( resp => {
@@ -49,7 +54,19 @@ export default class OrthographyPageComponent {
           info: resp
         },
       ]);
+      this.cdRef.detectChanges();
+      this.scrollToBottom();
     });
+  };
+
+  public scrollToBottom(): void {
+    if(this.divMensajes) {
+      console.log('hola')
+      this.divMensajes.nativeElement.scroll({
+        top: this.divMensajes.nativeElement.scrollHeight, 
+        behavior:'smooth'
+      });
+    };
   };
 }
 

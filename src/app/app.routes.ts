@@ -21,14 +21,14 @@ export const routes: Routes = [
       {
         path: 'pros-cons',
         loadComponent: () =>
-          import('./presentation/pages/prosConsPage/prosConsPage.component'),
+          import('./presentation/pages/prosConsStreamPage/prosConsStreamPage.component'),
         data: {
           icon: 'fa-solid fa-code-compare',
           title: 'Pros & Cons',
           description: 'Comparar pros y contras',
         },
       },
-      {
+      /* {
         path: 'pros-cons-stream',
         loadComponent: () =>
           import(
@@ -39,7 +39,7 @@ export const routes: Routes = [
           title: 'Como stream',
           description: 'Con stream de mensajes',
         },
-      },
+      }, */
       {
         path: 'translate',
         loadComponent: () =>

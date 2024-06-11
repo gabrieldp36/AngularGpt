@@ -1,11 +1,11 @@
-import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { MarkdownModule } from 'ngx-markdown';
 
 @Component({
   selector: 'app-gpt-message',
   standalone: true,
   imports: [
-    CommonModule,
+    MarkdownModule
   ],
   templateUrl: './gptMessage.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

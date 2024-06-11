@@ -1,14 +1,76 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, ViewChild, inject, signal } from '@angular/core';
+import { GptMessageComponent, MyMessageComponent, TypingLoaderComponent, TextMessageBoxComponent } from '@components/index';
+import { Message } from '@interfaces/message.interface';
+import { OpenAiService } from 'app/presentation/services/openai.service';
 
 @Component({
   selector: 'app-pros-cons-stream-page',
   standalone: true,
   imports: [
     CommonModule,
+    GptMessageComponent,
+    MyMessageComponent,
+    TypingLoaderComponent,
+    TextMessageBoxComponent,
   ],
   templateUrl: './prosConsStreamPage.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export default class ProsConsStreamPageComponent { }
+export default class ProsConsStreamPageComponent {
+
+  @ViewChild('divMensajes') divMensajes!: ElementRef<HTMLDivElement>;
+
+  public messages = signal<Message[]>([]);
+  public isLoading = signal(false);
+  public openAiService = inject(OpenAiService);
+  public cdRef = inject(ChangeDetectorRef)
+
+  public async handleMessage(prompt: string) {
+    // Actualizamos el estado del loading para indicar que se está cargando la respuesta del backend.
+    this.isLoading.set(true);
+    // Hacemos un update de los mensajes para agregar el texto enviado por el usuario.
+    this.messages.update( (prev) => [
+      // incorporamos todos lo mensajes anteriores.
+      ...prev,
+      // incluímos el nuevo
+      {
+        isGpt: false,
+        text: prompt
+      }
+    ]);
+    this.cdRef.detectChanges();
+    this.scrollToBottom('smooth');
+    // En la constante stream tenemos nuestro async generator.
+    const stream = this.openAiService.prosConsDiscusserStream(prompt);
+    setTimeout( async () => {
+      // Con el for await vamos consumiendo todos los valores que emite nuestro async generator.
+      for await (const text of stream) {
+        this.isLoading.set(false); // quitamos el loading.
+        this.handleMessageStream(text); // vamos mostrando el mensaje en pantalla.
+        this.scrollToBottom('instant'); // seguimos la generación de texto con el scroll.
+      }
+    }, 1000);
+  };
+
+  public handleMessageStream(message: string) {
+    if(this.messages().length > 1 ) this.messages().pop();
+    this.messages.set([
+      ...this.messages(),
+      {
+        isGpt: true,
+        text: message,
+      },
+    ]);
+  };
+
+  public scrollToBottom(behavior: ScrollBehavior): void {
+    if(this.divMensajes) {
+      this.divMensajes.nativeElement.scroll({
+        top: this.divMensajes.nativeElement.scrollHeight, 
+        behavior
+      });
+    };
+  };
+}
 

@@ -13,10 +13,6 @@ h1 {
   @apply text-3xl font-bold mb-4;
 }
 
-p {
-  @apply mb-4;
-}
-
 ul {
   @apply list-disc list-inside;
 }
@@ -70,8 +66,8 @@ ul {
   color: #69efae;
 }
 
-.max-width-70 {
-  max-width: 70%;
+.max-width-80 {
+  max-width: 80%;
 }
 
 /* Animations */
@@ -87,6 +83,12 @@ ul {
   100% {
     opacity: 1;
   }
+}
+
+@keyframes flicker-text {  
+  0% { opacity: 1.0; }
+  50% { opacity: 0.2; }
+  100% { opacity: 1.0; }
 }
 
 /*Scroll Bar*/

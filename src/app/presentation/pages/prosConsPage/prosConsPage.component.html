@@ -1,1 +1,32 @@
-<p>prosConsPage works!</p>,
+<div class="chat-container">
+
+    <div class="chat-messages">
+      <div class="grid gap-y-6">
+        <app-gpt-message
+          [text]="'⚛️🧪¿Qué deseas comparar? 🚀'"
+        />
+        @for (message of messages(); track $index) {
+          @if(message.isGpt) {
+            <app-gpt-message
+                [text]="message.text"
+            />
+          } @else {
+            <app-my-message
+              [text]="message.text"
+            />
+          }
+        }
+      </div>
+      @if (isLoading()) {
+        <app-typing-loader/>
+      }
+    </div>
+  
+    <app-text-message-box
+      placeholder="Escribe aquí tu comparativa 🧐"
+      (onMessage)="handleMessage($event)"
+      [disableCorrection]="true"
+    />
+
+</div>
+  
