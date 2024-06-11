@@ -22,6 +22,7 @@ export default class ProsConsStreamPageComponent {
   @ViewChild('divMensajes') divMensajes!: ElementRef<HTMLDivElement>;
 
   public messages = signal<Message[]>([]);
+  public idMessage: number = 0;
   public isLoading = signal(false);
   public openAiService = inject(OpenAiService);
   public cdRef = inject(ChangeDetectorRef)
@@ -39,6 +40,7 @@ export default class ProsConsStreamPageComponent {
       ...prev,
       // incluímos el nuevo
       {
+        id: this.idMessage++,
         isGpt: false,
         text: prompt
       }
@@ -58,10 +60,11 @@ export default class ProsConsStreamPageComponent {
   };
 
   public handleMessageStream(message: string) {
-    if(this.messages().length > 1 ) this.messages().pop();
+    if(this.messages().length > 1 && this.messages()[this.messages().length -1].isGpt === true) { this.messages().pop() };
     this.messages.set([
       ...this.messages(),
       {
+        id: this.idMessage++,
         isGpt: true,
         text: message,
       },

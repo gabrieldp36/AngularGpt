@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, inject } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
@@ -28,6 +28,7 @@ export class TextMessageBoxComponent {
   @Input() disableCorrection: boolean = false;
   @Output() onMessage = new EventEmitter<string>();
 
+  public cdRef = inject(ChangeDetectorRef);
   public fb: FormBuilder = inject(FormBuilder); // Injectamos el servicio de FormBuilder.
   public myForm: FormGroup = this.fb.group({
     prompt: ['', [Validators.required]],
@@ -38,6 +39,7 @@ export class TextMessageBoxComponent {
     const { prompt } = this.myForm.value;
     this.onMessage.emit(prompt ?? '');
     this.myForm.reset();
+    this.cdRef.detectChanges();
   };
 }
 

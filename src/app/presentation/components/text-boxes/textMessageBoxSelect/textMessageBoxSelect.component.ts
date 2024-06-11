@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, inject } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 interface Option {
@@ -27,10 +27,11 @@ export class TextMessageBoxSelectComponent {
   @Input({required: true}) options!: Option[];
   @Output() onMessage = new EventEmitter<TextMessageBoxEvent>();
 
+  public cdRef = inject(ChangeDetectorRef);
   public fb: FormBuilder = inject(FormBuilder); // Injectamos el servicio de FormBuilder.
   public myForm: FormGroup = this.fb.group({
     prompt: ['', [Validators.required]],
-    selectedOption: ['default', [Validators.required]],
+    selectedOption: [null, [Validators.required]],
   });
 
   public handleSubmit(): void {
@@ -38,9 +39,10 @@ export class TextMessageBoxSelectComponent {
     const { prompt, selectedOption } = this.myForm.value;
     this.onMessage.emit( {prompt, selectedOption } );
     this.myForm.reset({
-      prompt: '',
-      selectedOption: 'default',
+      prompt: null,
+      selectedOption: null,
     });
+    this.cdRef.detectChanges();
   };
 }
 

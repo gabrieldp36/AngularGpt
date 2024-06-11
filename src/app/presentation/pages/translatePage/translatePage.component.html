@@ -1,1 +1,34 @@
-<p>translatePage works!</p>,
+<div  class="chat-container">
+
+  <div #divMensajes class="chat-messages">
+    <div class="grid gap-y-6">
+      <app-gpt-message
+        [text]="'🌎📣¿Qué texto deseas traducir? 🚀'"
+      />
+      @for (message of messages(); track message.text) {
+        @if(message.isGpt) {
+          <app-gpt-message
+              [text]="message.text"
+          />
+        } @else {
+          <app-my-message
+            [text]="message.text"
+          />
+        }
+      }
+    </div>
+    @if (isLoading()) {
+      <app-typing-loader/>
+    }
+  </div>
+  
+  <app-text-message-box-select
+    placeholder="Escribe aquí el texto que deseas traducir 💬😄"
+    [options]="languages()"
+    (onMessage)="handleMessageWithSelect($event)"
+  />
+  
+</div>
+  
+
+

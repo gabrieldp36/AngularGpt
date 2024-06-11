@@ -17,7 +17,7 @@
                 formControlName="selectedOption"
                 class="w-2/5 ml-5 border rounded-xl input-bg-gray pl-4 min-h-10 cursor-pointer"
             >
-                <option value="default" selected disabled>🔍 Seleccione</option>
+                <option [value]=null selected disabled>🔍 Seleccione</option>
                 @for (option of options; track option.id) {
                     <option [value]="option.id">{{ option.text }}</option>
                 }
@@ -26,7 +26,7 @@
     </div>
 
     <div class="ml-4">
-        <button 
+        <button
             class="btn-primary" 
             type="submit"
             [disabled]="myForm.invalid"

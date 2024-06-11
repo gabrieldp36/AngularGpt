@@ -5,7 +5,7 @@
         <app-gpt-message
           [text]="'⚛️🧪¿Qué deseas comparar? 🚀'"
         />
-        @for (message of messages(); track message.text) {
+        @for (message of messages(); track message.id) {
           @if(message.isGpt) {
             <app-gpt-message
                 [text]="message.text"
