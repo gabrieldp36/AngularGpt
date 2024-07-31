@@ -7,4 +7,5 @@ export interface Message {
         errors:    string[];
         message:   string;
     }
+    audioUrl?: string;
 }

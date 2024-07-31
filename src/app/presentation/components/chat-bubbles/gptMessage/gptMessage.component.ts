@@ -11,6 +11,8 @@ import { MarkdownModule } from 'ngx-markdown';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GptMessageComponent { 
-  @Input({required: true}) text!: string;
+  @Input() text?: string;
+  @Input() audioUrl?: string;
+
 }
 

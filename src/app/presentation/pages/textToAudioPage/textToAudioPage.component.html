@@ -1,1 +1,35 @@
-<p>textToAudioPage works!</p>,
+<div  class="chat-container">
+
+    <div #divMensajes class="chat-messages">
+      <div class="grid gap-y-6">
+        <app-gpt-message
+          [text]="'🔈🎵 ¿Qué texto deseas traducir? 🚀'"
+        />
+        @for (message of messages(); track message.text) {
+          @if(message.isGpt) {
+            <app-gpt-message
+              [audioUrl]="message.audioUrl"
+            />
+          } @else {
+            <app-my-message
+              [text]="message.text"
+            />
+          }
+        }
+      </div>
+      @if (isLoading()) {
+        <app-typing-loader [type]="'generating'"/>
+      }
+    </div>
+    
+    <app-text-message-box-select
+      placeholder="Escribe aquí el texto deseas converti a audio 🎙️🔈 😄"
+      [options]="voices()"
+      (onMessage)="handleMessageWithSelect($event)"
+    />
+    
+  </div>
+    
+  
+  
+  

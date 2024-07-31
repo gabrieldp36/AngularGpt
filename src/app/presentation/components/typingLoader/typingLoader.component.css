@@ -23,6 +23,31 @@
   animation-iteration-count: infinite;
 }
 
+.generating {
+  width: 60px;
+  height: 30px;
+  border-radius: 20px;
+  margin: 1.8rem 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: transparent;
+  position: relative;
+}
+
+.generating::after {
+  position: absolute;
+  content: '⚛️🧪🚀';
+  font-size: 30px;;
+  width: 150px;
+  top: -15px;
+  left: 60px;
+  animation-name: flicker;
+  animation-duration: 1s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
 .circle {
   display: block;
   height: 10px;
