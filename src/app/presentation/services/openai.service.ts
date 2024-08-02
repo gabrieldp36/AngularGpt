@@ -1,19 +1,15 @@
 import { Injectable } from '@angular/core';
-import { orthographyUseCase, prosConsStreamUseCase, prosConsUseCase, textToAudioUseCase, translateTextStreamUseCase } from '@use-cases/index';
-import { OrthographyResponse } from '@interfaces/orthography.response';
-import { ProsConsResponse } from '@interfaces/pros-cons.response';
-import { Observable, from } from 'rxjs';
-import { TextToAudioResponse } from '@interfaces/text-to-audio.response';
-
+import { catchError, from } from 'rxjs';
+import { orthographyUseCase, prosConsStreamUseCase, prosConsUseCase, textToAudioUseCase, translateTextStreamUseCase, audioToTextUseCase } from '@use-cases/index';
 
 @Injectable({providedIn: 'root'})
 export class OpenAiService {
     
-    public orthographyCheck(prompt: string): Observable<OrthographyResponse> {
+    public orthographyCheck(prompt: string) {
         return from( orthographyUseCase(prompt) );
     };
 
-    public prosConsDiscusser(prompt: string): Observable<ProsConsResponse> {
+    public prosConsDiscusser(prompt: string) {
         return from( prosConsUseCase(prompt) );
     };
 
@@ -25,7 +21,11 @@ export class OpenAiService {
         return translateTextStreamUseCase(prompt, lang, abortSignal);
     };
 
-    public textToAudio(prompt: string, voice: string): Observable<TextToAudioResponse> {
-        return from( textToAudioUseCase(prompt, voice) );
+    public textToAudio(prompt: string, voice: string) {
+        return from(textToAudioUseCase(prompt, voice));
+    };
+
+    public audioToText(file: File, prompt?: string) {
+        return from(audioToTextUseCase(file, prompt));
     };
 }

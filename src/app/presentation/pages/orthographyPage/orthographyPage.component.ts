@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, Component, ElementRef, ViewChild, inject, sign
 import { GptMessageComponent, GptMessageOrthographyComponent, MyMessageComponent, TextMessageBoxComponent, TypingLoaderComponent } from '@components/index';
 import { Message } from '@interfaces/message.interface';
 import { OpenAiService } from 'app/presentation/services/openai.service';
+import { SwalertService } from 'app/presentation/services/swalert.service';
 
 @Component({
   selector: 'app-orthography-page',
@@ -25,6 +26,7 @@ export default class OrthographyPageComponent {
   public messages = signal<Message[]>([]);
   public isLoading = signal(false);
   public openAiService = inject(OpenAiService);
+  public swAlert = inject(SwalertService);
   public cdRef = inject(ChangeDetectorRef)
 
   public handleMessage(prompt: string): void {
@@ -45,17 +47,23 @@ export default class OrthographyPageComponent {
     // Realizamos la consulta al backend para obtener la corrección ortográfica de la IA.
     this.openAiService.orthographyCheck(prompt)
     .subscribe( resp => {
-      this.isLoading.set(false);
-      this.messages.update( (prev) => [
-        ...prev,
-        {
-          isGpt: true,
-          text: resp.message,
-          info: resp
-        },
-      ]);
-      this.cdRef.detectChanges();
-      this.scrollToBottom();
+      if(!resp.ok) {
+        this.swAlert.dialogoSimple('error', 'Ha ocurrido un error.', resp.message);
+        this.messages.update( (prev) => [ ...prev, { isGpt: true, text: resp.message} ] );
+        this.isLoading.set(false);
+      } else {
+        this.isLoading.set(false);
+        this.messages.update( (prev) => [
+          ...prev,
+          {
+            isGpt: true,
+            text: resp.message,
+            info: resp
+          },
+        ]);
+        this.cdRef.detectChanges();
+        this.scrollToBottom();
+      };
     });
   };
 

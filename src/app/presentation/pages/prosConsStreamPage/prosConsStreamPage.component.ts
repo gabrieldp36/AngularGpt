@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, View
 import { GptMessageComponent, MyMessageComponent, TypingLoaderComponent, TextMessageBoxComponent } from '@components/index';
 import { Message } from '@interfaces/message.interface';
 import { OpenAiService } from 'app/presentation/services/openai.service';
+import { SwalertService } from 'app/presentation/services/swalert.service';
 
 @Component({
   selector: 'app-pros-cons-stream-page',
@@ -25,6 +26,7 @@ export default class ProsConsStreamPageComponent {
   public idMessage: number = 0;
   public isLoading = signal(false);
   public openAiService = inject(OpenAiService);
+  public swAlert = inject(SwalertService);
   public cdRef = inject(ChangeDetectorRef)
   public abortSignal = new AbortController();
 
@@ -47,16 +49,22 @@ export default class ProsConsStreamPageComponent {
     ]);
     this.cdRef.detectChanges();
     this.scrollToBottom('smooth');
-    // En la constante stream tenemos nuestro async generator.
     const stream = this.openAiService.prosConsDiscusserStream(prompt, this.abortSignal.signal);
-    setTimeout( async () => {
-      // Con el for await vamos consumiendo todos los valores que emite nuestro async generator.
-      for await (const text of stream) {
-        this.isLoading.set(false); // quitamos el loading.
-        this.handleMessageStream(text); // vamos mostrando el mensaje en pantalla.
-        this.scrollToBottom('instant'); // seguimos la generación de texto con el scroll.
-      }
-    }, 1000);
+    // Validamos que en la constante stream tenemos nuestro async generator.
+    if( !( await stream.next() ).value ) {
+      this.swAlert.dialogoSimple('error', 'Ha ocurrido un error.', 'No se ha podido realizar la comparación.');
+      this.messages.update( (prev) => [ ...prev, { isGpt: true, text: 'No se ha podido realizar la comparación.'} ] );
+      this.isLoading.set(false);
+    } else {
+      setTimeout( async () => {
+        // Con el for await vamos consumiendo todos los valores que emite nuestro async generator.
+        for await (const text of stream) {
+          this.isLoading.set(false); // quitamos el loading.
+          this.handleMessageStream(text); // vamos mostrando el mensaje en pantalla.
+          this.scrollToBottom('instant'); // seguimos la generación de texto con el scroll.
+        }
+      }, 1000);
+    };
   };
 
   public handleMessageStream(message: string) {

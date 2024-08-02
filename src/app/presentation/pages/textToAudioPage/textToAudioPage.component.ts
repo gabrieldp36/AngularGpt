@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, inje
 import { GptMessageComponent, MyMessageComponent, TextMessageBoxEvent, TextMessageBoxSelectComponent, TypingLoaderComponent } from '@components/index';
 import { Message } from '@interfaces/message.interface';
 import { OpenAiService } from 'app/presentation/services/openai.service';
+import { SwalertService } from 'app/presentation/services/swalert.service';
 
 @Component({
   selector: 'app-text-to-audio-page',
@@ -32,6 +33,7 @@ export default class TextToAudioPageComponent {
   ]);
 
   public openAiService = inject(OpenAiService);
+  public swAlert = inject(SwalertService);
   public cdRef = inject(ChangeDetectorRef)
 
   public handleMessageWithSelect( { prompt, selectedOption }:TextMessageBoxEvent ) {
@@ -50,20 +52,25 @@ export default class TextToAudioPageComponent {
     this.cdRef.detectChanges();
     this.scrollToBottom('smooth');
     this.openAiService.textToAudio(prompt, selectedOption)
-    .subscribe( ( {message, audioUrl} ) => {
-      this.isLoading.set(false);
-      this.messages.update( (prev) => [
-        ...prev,
-        {
-          isGpt: true,
-          text: message,
-          audioUrl
-        },
-      ]);
-      this.cdRef.detectChanges();
-      this.scrollToBottom('smooth');
+    .subscribe( ( {ok, message, audioUrl} ) => {
+      if(!ok) {
+        this.swAlert.dialogoSimple('error', 'Ha ocurrido un error.', message);
+        this.messages.update( (prev) => [ ...prev, { isGpt: true, text: message } ] );
+        this.isLoading.set(false);
+      } else { 
+        this.isLoading.set(false);
+        this.messages.update( (prev) => [
+          ...prev,
+          {
+            isGpt: true,
+            text: '',
+            audioUrl
+          },
+        ]);
+        this.cdRef.detectChanges();
+        this.scrollToBottom('smooth');
+      };
     });
-    
   };
 
   public scrollToBottom(behavior: ScrollBehavior): void {

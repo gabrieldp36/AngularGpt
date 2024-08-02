@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, View
 import { GptMessageComponent, MyMessageComponent, TypingLoaderComponent, TextMessageBoxSelectComponent, TextMessageBoxEvent } from '@components/index';
 import { Message } from '@interfaces/message.interface';
 import { OpenAiService } from 'app/presentation/services/openai.service';
+import { SwalertService } from 'app/presentation/services/swalert.service';
 
 @Component({
   selector: 'app-translate-page',
@@ -38,10 +39,11 @@ export default class TranslatePageComponent {
     { id: 'ruso', text: 'Ruso' },
   ]);
   public openAiService = inject(OpenAiService);
+  public swAlert = inject(SwalertService);
   public cdRef = inject(ChangeDetectorRef)
   public abortSignal = new AbortController();
 
-  public handleMessageWithSelect( { prompt, selectedOption }:TextMessageBoxEvent ) {
+  public async handleMessageWithSelect( { prompt, selectedOption }:TextMessageBoxEvent ) {
     // En caso de estar una petición en curso y que el usuario vuelva a enviar una, cancelamos la anterior petición.
     this.abortSignal.abort();
     this.abortSignal = new AbortController();
@@ -62,14 +64,21 @@ export default class TranslatePageComponent {
     this.scrollToBottom('smooth');
     // En la constante stream tenemos nuestro async generator.
     const stream = this.openAiService.translateText(prompt, selectedOption, this.abortSignal.signal);
-    setTimeout( async () => {
-      // Con el for await vamos consumiendo todos los valores que emite nuestro async generator.
-      for await (const text of stream) {
-        this.isLoading.set(false); // quitamos el loading.
-        this.handleMessageStream(text); // vamos mostrando el mensaje en pantalla.
-        this.scrollToBottom('instant'); // seguimos la generación de texto con el scroll.
-      }
-    }, 1000);
+    // Validamos que en la constante stream tenemos nuestro async generator.
+    if( !( await stream.next() ).value ) {
+      this.swAlert.dialogoSimple('error', 'Ha ocurrido un error.', 'No se ha podido realizar la traducción.');
+      this.messages.update( (prev) => [ ...prev, { isGpt: true, text: 'No se ha podido realizar la traducción.'} ] );
+      this.isLoading.set(false);
+    } else {
+      setTimeout( async () => {
+        // Con el for await vamos consumiendo todos los valores que emite nuestro async generator.
+        for await (const text of stream) {
+          this.isLoading.set(false); // quitamos el loading.
+          this.handleMessageStream(text); // vamos mostrando el mensaje en pantalla.
+          this.scrollToBottom('instant'); // seguimos la generación de texto con el scroll.
+        }
+      }, 1000);
+    };
   };
 
   public handleMessageStream(message: string) {

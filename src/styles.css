@@ -70,7 +70,7 @@ ul {
   max-width: 80%;
 }
 
-/* Animations */
+/************************************Animations************************************/
 
 .fade-in {
   animation: fadeIn 0.3s;
@@ -91,7 +91,7 @@ ul {
   100% { opacity: 1.0; }
 }
 
-/*Scroll Bar*/
+/************************************Scroll Bar************************************/
 
 *::-webkit-scrollbar {
   width: 8px;
@@ -129,4 +129,14 @@ ul {
 
 *::-webkit-scrollbar-corner {
   background-color: transparent;
+}
+
+/************************************Sweet Alert***************************************/
+
+.swal2-styled.swal2-confirm {
+  box-shadow: none !important;
+}
+
+.swal2-timer-progress-bar {
+  background-color: rgba(9,9,121,1) !important;
 }

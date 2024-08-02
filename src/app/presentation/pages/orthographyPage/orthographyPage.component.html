@@ -8,9 +8,9 @@
       @for (message of messages(); track $index) {
         @if(message.isGpt) {
           <app-gpt-message-orthography
-            [userScore]="message.info!.userScore"
+            [userScore]="message.info?.userScore || null"
             [text]="message.text"
-            [errors]="message.info!.errors"
+            [errors]="message.info?.errors || []"
           />
         } @else {
           <app-my-message

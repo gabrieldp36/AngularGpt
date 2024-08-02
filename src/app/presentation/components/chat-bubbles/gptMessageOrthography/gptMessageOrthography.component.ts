@@ -11,7 +11,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GptMessageOrthographyComponent { 
-  @Input({required: true}) userScore!: number;
+  @Input({required: true}) userScore!: number|null;
   @Input({required: true}) text!:   string;
   @Input() errors: string[] = [];
 }

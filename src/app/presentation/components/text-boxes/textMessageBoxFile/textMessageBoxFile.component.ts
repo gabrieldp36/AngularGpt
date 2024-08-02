@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, Output, inject } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, Output, ViewChild, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 export interface TextMessageEvent {
   file: File,
-  prompt: string|null,
+  prompt: string|undefined,
 };
 
 @Component({
@@ -20,6 +20,7 @@ export interface TextMessageEvent {
 export class TextMessageBoxFileComponent { 
 
   @Input() placeholder: string = '';
+  @ViewChild('fileInput') inputFile!: ElementRef<HTMLInputElement>;
   @Output() onMessage = new EventEmitter<TextMessageEvent>();
 
   public cdRef = inject(ChangeDetectorRef);
@@ -28,7 +29,6 @@ export class TextMessageBoxFileComponent {
     prompt: ['', []],
     file: [null, [Validators.required]],
   });
-  public file: File|undefined;
 
   public handleSelectedFile(event: any): void {
     const file = event?.target?.files?.item(0);
@@ -46,6 +46,7 @@ export class TextMessageBoxFileComponent {
     const { prompt, file } = this.myForm.value;
     this.onMessage.emit( {prompt, file} );
     this.myForm.reset();
+    this.inputFile.nativeElement.value = '';
     this.cdRef.detectChanges();
   };
 }

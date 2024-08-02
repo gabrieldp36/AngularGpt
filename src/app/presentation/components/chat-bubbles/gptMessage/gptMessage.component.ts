@@ -13,6 +13,5 @@ import { MarkdownModule } from 'ngx-markdown';
 export class GptMessageComponent { 
   @Input() text?: string;
   @Input() audioUrl?: string;
-
 }
 
