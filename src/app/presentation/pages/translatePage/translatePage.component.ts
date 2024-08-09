@@ -67,8 +67,10 @@ export default class TranslatePageComponent {
     // Validamos que en la constante stream tenemos nuestro async generator.
     if( !( await stream.next() ).value ) {
       this.swAlert.dialogoSimple('error', 'Ha ocurrido un error.', 'No se ha podido realizar la traducción.');
-      this.messages.update( (prev) => [ ...prev, { isGpt: true, text: 'No se ha podido realizar la traducción.'} ] );
+      this.messages.update( (prev) => [ ...prev, { id: this.idMessage++, isGpt: true, text: 'No se ha podido realizar la traducción.'} ] );
       this.isLoading.set(false);
+      this.cdRef.detectChanges();
+      this.scrollToBottom('smooth');
     } else {
       setTimeout( async () => {
         // Con el for await vamos consumiendo todos los valores que emite nuestro async generator.

@@ -23,7 +23,7 @@ export const orthographyUseCase = async (prompt: string) => {
             ok: false,
             userScore: 0,
             errors: [],
-            message: 'No sea ha podido realizar la correción. Intene nuevamente más tarde.'
+            message: 'No sea ha podido realizar la correción. Intente nuevamente más tarde.'
         };
     };
 };

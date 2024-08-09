@@ -19,10 +19,12 @@ import { SwalertService } from 'app/presentation/services/swalert.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class TextToAudioPageComponent {
+  
   @ViewChild('divMensajes') divMensajes!: ElementRef<HTMLDivElement>;
 
   public isLoading = signal(false);
   public messages = signal<Message[]>([]);
+  public idMessage: number = 0;
   public voices = signal([
     { id: "nova", text: "Nova" },
     { id: "alloy", text: "Alloy" },
@@ -45,6 +47,7 @@ export default class TextToAudioPageComponent {
       ...prev,
       // incluímos el nuevo
       {
+        id: this.idMessage++,
         isGpt: false,
         text: `Convierte a audio el siguiente texto: ${prompt}`,
       }
@@ -55,21 +58,22 @@ export default class TextToAudioPageComponent {
     .subscribe( ( {ok, message, audioUrl} ) => {
       if(!ok) {
         this.swAlert.dialogoSimple('error', 'Ha ocurrido un error.', message);
-        this.messages.update( (prev) => [ ...prev, { isGpt: true, text: message } ] );
+        this.messages.update( (prev) => [ ...prev, { id: this.idMessage++, isGpt: true, text: message } ] );
         this.isLoading.set(false);
       } else { 
         this.isLoading.set(false);
         this.messages.update( (prev) => [
           ...prev,
           {
+            id: this.idMessage++,
             isGpt: true,
             text: '',
             audioUrl
           },
         ]);
-        this.cdRef.detectChanges();
-        this.scrollToBottom('smooth');
       };
+      this.cdRef.detectChanges();
+      this.scrollToBottom('smooth');
     });
   };
 

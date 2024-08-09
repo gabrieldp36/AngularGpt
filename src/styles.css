@@ -33,8 +33,23 @@ ul {
   @apply bg-indigo-500 text-white font-bold py-2 px-4 rounded-xl hover:bg-indigo-700 transition-all duration-200 ease-in-out;
 }
 
+.btn-primary-sm {
+  @apply bg-indigo-500 text-white py-1 px-3 rounded-xl hover:bg-indigo-700 transition-all duration-200 ease-in-out;
+}
+
+.btn-danger-sm {
+  @apply bg-red-500 text-white py-1 px-3 rounded-xl hover:bg-red-700 transition-all duration-200 ease-in-out;
+}
+
 .btn-primary:disabled {
   @apply bg-indigo-500 text-white font-bold py-2 px-4 rounded-xl opacity-50 cursor-not-allowed;
+}
+
+.btnIcon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: .5rem;
 }
 
 .chat-container {
@@ -70,6 +85,10 @@ ul {
   max-width: 80%;
 }
 
+.center {
+  margin: 0 auto;
+}
+
 /************************************Animations************************************/
 
 .fade-in {
@@ -95,6 +114,7 @@ ul {
 
 *::-webkit-scrollbar {
   width: 8px;
+  height: 8px;
   background: transparent;
 }
 

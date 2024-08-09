@@ -11,7 +11,17 @@ import { MarkdownModule } from 'ngx-markdown';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GptMessageComponent { 
+  
   @Input() text?: string;
   @Input() audioUrl?: string;
-}
+  @Input() imageInfo?: { url: string, alt: string };
+
+  public abrirImagen(): void {
+    const anchor = document.createElement('a');
+    anchor.setAttribute('href', `${this.imageInfo?.url}`);
+    anchor.setAttribute('target', '_blank');
+    anchor.click();
+    anchor.remove();
+  };
+};
 

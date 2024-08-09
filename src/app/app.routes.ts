@@ -78,7 +78,7 @@ export const routes: Routes = [
         path: 'image-generation',
         loadComponent: () =>
           import(
-            './presentation/pages/imageGenerationPage/imageGenerationPage.component'
+            './presentation/pages/imageTunningPage/imageTunningPage.component'
           ),
         data: {
           icon: 'fa-solid fa-image',
@@ -86,7 +86,7 @@ export const routes: Routes = [
           description: 'Generar imágenes',
         },
       },
-      {
+/*       {
         path: 'image-tunning',
         loadComponent: () =>
           import(
@@ -97,7 +97,7 @@ export const routes: Routes = [
           title: 'Editar imagen',
           description: 'Generación continua',
         },
-      },
+      }, */
       {
         path: 'assistant',
         loadComponent: () =>

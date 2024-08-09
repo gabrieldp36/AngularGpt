@@ -25,6 +25,7 @@ export default class AudioToTextPageComponent {
 
   public isLoading = signal(false);
   public messages = signal<Message[]>([]);
+  public idMessage: number = 0;
   public openAiService = inject(OpenAiService);
   public swAlert = inject(SwalertService);
   public cdRef = inject(ChangeDetectorRef)
@@ -35,19 +36,21 @@ export default class AudioToTextPageComponent {
     // Actualizamos el estado del loading para indicar que se está cargando la respuesta del backend.
     this.isLoading.set(true);
     // Hacemos un update de los mensajes para agregar el texto enviado por el usuario.
-    this.messages.update( (prev) => [ ...prev, { isGpt: false, text } ] );
+    this.messages.update( (prev) => [ ...prev, { id: this.idMessage++, isGpt: false, text } ] );
     this.cdRef.detectChanges();
     this.scrollToBottom('smooth');
     this.openAiService.audioToText(file, prompt)
     .subscribe( resp => { 
       if(!resp.ok) {
         this.swAlert.dialogoSimple('error', 'Ha ocurrido un error.', resp.error);
-        this.messages.update( (prev) => [ ...prev, { isGpt: true, text: resp.error } ] );
+        this.messages.update( (prev) => [ ...prev, { id: this.idMessage++, isGpt: true, text: resp.error } ] );
         this.isLoading.set(false);
+        this.cdRef.detectChanges();
+        this.scrollToBottom('smooth');
       } else {
         this.handleResponse(resp.data!);
         this.cdRef.detectChanges();
-        setTimeout(() => { this.scrollToBottom('smooth'); }, 1);
+        setTimeout(() => { this.scrollToBottom('smooth'); }, 100);
       };
     });
   };
@@ -64,7 +67,7 @@ __El texto es:__
 ${ resp.text }
     `;
 
-    this.messages.update( prev => [...prev, { isGpt: true, text: text }] );
+    this.messages.update( prev => [...prev, { id: this.idMessage++, isGpt: true, text: text }] );
 
     for (const segment of resp.segments) {
       const segmentMessage = `
@@ -72,7 +75,7 @@ __De ${ Math.round(segment.start) } a ${ Math.round( segment.end ) } segundos.__
 ${ segment.text }
       `;
 
-      this.messages.update( prev => [...prev, { isGpt: true, text: segmentMessage }] );
+      this.messages.update( prev => [...prev, { id: this.idMessage++, isGpt: true, text: segmentMessage }] );
     }
   };
 

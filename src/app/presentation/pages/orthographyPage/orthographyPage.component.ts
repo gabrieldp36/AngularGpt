@@ -24,6 +24,7 @@ export default class OrthographyPageComponent {
   @ViewChild('divMensajes') divMensajes!: ElementRef<HTMLDivElement>;
 
   public messages = signal<Message[]>([]);
+  public idMessage: number = 0;
   public isLoading = signal(false);
   public openAiService = inject(OpenAiService);
   public swAlert = inject(SwalertService);
@@ -38,6 +39,7 @@ export default class OrthographyPageComponent {
       ...prev,
       // incluímos el nuevo
       {
+        id: this.idMessage++,
         isGpt: false,
         text: prompt
       }
@@ -49,27 +51,27 @@ export default class OrthographyPageComponent {
     .subscribe( resp => {
       if(!resp.ok) {
         this.swAlert.dialogoSimple('error', 'Ha ocurrido un error.', resp.message);
-        this.messages.update( (prev) => [ ...prev, { isGpt: true, text: resp.message} ] );
+        this.messages.update( (prev) => [ ...prev, { id: this.idMessage++, isGpt: true, text: resp.message } ] );
         this.isLoading.set(false);
       } else {
         this.isLoading.set(false);
         this.messages.update( (prev) => [
           ...prev,
           {
+            id: this.idMessage++,
             isGpt: true,
             text: resp.message,
             info: resp
           },
         ]);
-        this.cdRef.detectChanges();
-        this.scrollToBottom();
       };
+      this.cdRef.detectChanges();
+      this.scrollToBottom();
     });
   };
 
   public scrollToBottom(): void {
     if(this.divMensajes) {
-      console.log('hola')
       this.divMensajes.nativeElement.scroll({
         top: this.divMensajes.nativeElement.scrollHeight, 
         behavior:'smooth'

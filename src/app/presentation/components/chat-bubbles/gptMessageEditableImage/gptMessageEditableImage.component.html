@@ -1,0 +1,54 @@
+<div class="col-start-1 col-end-9 p-3 rounded-lg">
+    <div class="flex flex-row items-start">
+  
+      <div class="flex items-center justify-center h-12 w-12 rounded-full bg-green-600 flex-shrink-0">
+        IA
+      </div>
+
+      @if(text) {  
+        <div class="relative ml-3 bg-black bg-opacity-25 pt-3 pb-3 px-4 max-width-80 min-h-12 shadow rounded-xl">
+          <span>
+            {{ text }}
+          </span>
+        </div>
+      }
+
+      @if (imageInfo) { 
+        <div class="flex  flex-col justify-start">
+
+          <div class="relative ml-3 bg-black bg-opacity-25 pt-3 pb-3 px-4 shadow rounded-xl">
+            <div class="p-2">
+              <canvas
+                width="594"
+                height="594"
+                #canvas
+                (mousedown)="onMouseDown($event)"
+                (mousemove)="onMouseMove($event)"
+                (mouseup)="onMouseUp()"
+              ></canvas>
+            </div>
+          </div>
+          
+          <div class="flex justify-end items-center">
+            <button
+              class="btn-primary-sm mt-3"
+              (click)="downloadImage()"
+            >
+              <div class="btnIcon">
+                @if( !downloading() ) {
+                  <i class="fa-solid fa-download"></i>
+                } @else {
+                  <div class="animate-spin inline-block size-4 border-[3px] border-current border-t-transparent text-white rounded-full dark:text-white" role="status" aria-label="loading">
+                    <span class="sr-only">Loading...</span>
+                  </div>
+                }
+                <span class="text-sm">Descargar</span>
+              </div>
+            </button>
+          </div>
+
+        </div>
+      }
+    </div>
+</div>
+

@@ -5,7 +5,7 @@
       <app-gpt-message
         [text]="'⚡ Redacta el texto que quieres que revise 🚀'"
       />
-      @for (message of messages(); track $index) {
+      @for (message of messages(); track message.id) {
         @if(message.isGpt) {
           <app-gpt-message-orthography
             [userScore]="message.info?.userScore || null"

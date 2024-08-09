@@ -1,1 +1,90 @@
-<p>imageTunningPage works!</p>,
+<div  class="chat-container">
+
+  @if ( originalImage() && isEditing() && menuCompleto() ) {
+    <div class="fixed flex flex-col items-center top-20 z-10 fade-in" style="right: 13%;">
+
+      <div class="flex justify-between items-center gap-2 mb-3">
+        <span>🎨 Editando 👨‍🎨</span>
+        <i 
+          class="fa-regular fa-square-minus color-green hover:cursor-pointer hover:opacity-80" 
+          style="font-size: 18px"
+          role="button"
+          (click)="showMenu()"
+        ></i>
+      </div>
+
+      <img 
+        class="rounded-xl w-40 h-40 object-contain" style="border: 3px solid #374151"
+        [src]="originalImage()" 
+        alt="Imagen a editar"
+      >
+      <button
+        class="btn-primary-sm mt-3"
+        (click)="generateVariation()"
+      >
+        <div class="btnIcon">
+          <i class="fa-solid fa-paintbrush"></i>
+          <span class="text-sm">Generar variación</span>
+        </div>
+      </button>
+      <button
+        class="btn-danger-sm mt-3"
+        (click)="cancelEditing()"
+      >
+        <div class="btnIcon">
+          <i class="fa-solid fa-xmark"></i>
+          <span class="text-sm">Cancelar edición</span>
+        </div>
+      </button>
+    </div>
+
+  } @else if ( originalImage() && isEditing() && !menuCompleto() ) {
+    <div  class="fixed flex flex-col items-center top-20 z-10 fade-in" style="top: 50%; right: 13%;">
+      <div>
+        <i 
+          class="fa-solid fa-pen-to-square color-green hover:cursor-pointer hover:opacity-80"
+          style="font-size: 28px"
+          role="button"
+          (click)="showMenu()"
+        ></i>
+      </div>
+    </div>
+  }
+
+  <div #divMensajes class="chat-messages">
+    <div class="grid gap-y-6">
+      <app-gpt-message
+        [text]="'📷🖼️ ¿Qué imagen deseas generar? 🚀'"
+      />
+      @for (message of messages(); track $index) {
+        @if(message.isGpt) {
+          <app-gpt-message-editable-image
+            [text]="message.text"
+            [imageInfo]="message.imageInfo!"
+            (onSelectedImage)="handleImageChange($event, message.imageInfo!.url)"
+          />
+        } @else {
+          <app-my-message
+            [text]="message.text"
+          />
+        }
+      }
+    </div>
+
+    @if (isLoading()) {
+      <app-typing-loader [type]="'generating'"/>
+    }
+    
+  </div>
+  
+  <app-text-message-box
+    placeholder="Escribe aquí la descripción de la imagen a generar o editar 🎨🖌️"
+    (onMessage)="handleMessage($event)"
+    [disableCorrection]="true"
+  ></app-text-message-box>
+    
+</div>
+    
+  
+  
+  

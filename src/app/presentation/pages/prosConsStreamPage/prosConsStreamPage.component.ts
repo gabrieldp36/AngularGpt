@@ -55,6 +55,8 @@ export default class ProsConsStreamPageComponent {
       this.swAlert.dialogoSimple('error', 'Ha ocurrido un error.', 'No se ha podido realizar la comparación.');
       this.messages.update( (prev) => [ ...prev, { isGpt: true, text: 'No se ha podido realizar la comparación.'} ] );
       this.isLoading.set(false);
+      this.cdRef.detectChanges();
+      this.scrollToBottom('smooth');
     } else {
       setTimeout( async () => {
         // Con el for await vamos consumiendo todos los valores que emite nuestro async generator.

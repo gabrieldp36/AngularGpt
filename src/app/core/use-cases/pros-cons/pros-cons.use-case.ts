@@ -22,7 +22,7 @@ export const prosConsUseCase = async (prompt: string) => {
         return {
             ok: false,
             role: '',
-            content: 'No sea ha podido realizar la comparativa. Intene nuevamente más tarde.'
+            content: 'No sea ha podido realizar la comparativa. Intente nuevamente más tarde.'
         };
     };
 };
