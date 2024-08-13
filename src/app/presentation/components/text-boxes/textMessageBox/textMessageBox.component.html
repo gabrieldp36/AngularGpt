@@ -21,7 +21,7 @@
         <button 
             class="btn-primary" 
             type="submit"
-            [disabled]="myForm.invalid"
+            [disabled]="myForm.invalid || myForm.get('prompt')?.disabled"
         >
             <span class="mr-2">Enviar</span>
             <i class="fa-regular fa-paper-plane"></i>

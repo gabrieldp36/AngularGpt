@@ -4,6 +4,6 @@ export * from './image-generation.response';
 export * from './message.interface';
 export * from './orthography.response';
 export * from './pros-cons.response';
+export * from './question.response';
 export * from './text-to-audio.response';
-
-
+export * from './thread.response';

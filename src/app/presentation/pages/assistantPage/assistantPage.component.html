@@ -1,1 +1,33 @@
-<p>assistantPage works!</p>,
+<div class="chat-container">
+
+    <div #divMensajes class="chat-messages">
+      <div class="grid gap-y-6">
+        <app-gpt-message
+          [text]="'⚡ Saludos, soy Martina, ¿En qué puedo ayudarte? 🚀'"
+        />
+        @for (message of messages(); track message.id) {
+          @if(message.isGpt) {
+            <app-gpt-message
+              [text]="message.text"
+            />
+          } @else {
+            <app-my-message
+              [text]="message.text"
+            />
+          }
+        }
+      </div>
+      @if (isLoading()) {
+        <app-typing-loader [type]="'typing'"/>
+      }
+    </div>
+  
+    <app-text-message-box
+      placeholder="Escribe aquí tus consultas 😄"
+      (onMessage)="handleMessage($event)"
+      [disableCorrection]="true"
+      [disableInput]="disableInput()"
+    />
+  
+  </div>
+  

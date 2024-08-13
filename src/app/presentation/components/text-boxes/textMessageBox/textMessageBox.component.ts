@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, Output, inject } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
@@ -22,10 +22,12 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TextMessageBoxComponent {
-  
+export class TextMessageBoxComponent implements OnChanges {
+
   @Input() placeholder: string = '';
   @Input() disableCorrection: boolean = false;
+  @Input() disableInput?: boolean|undefined;
+
   @Output() onMessage = new EventEmitter<string>();
 
   public cdRef = inject(ChangeDetectorRef);
@@ -33,6 +35,16 @@ export class TextMessageBoxComponent {
   public myForm: FormGroup = this.fb.group({
     prompt: ['', [Validators.required]],
   });
+  
+  public ngOnChanges(changes: SimpleChanges): void {
+    if(changes['disableInput']) {
+      if(changes['disableInput'].currentValue) {
+        this.myForm.get('prompt')?.disable();
+      } else {
+        this.myForm.get('prompt')?.enable();
+      };
+    };
+  };
 
   public handleSubmit(): void {
     if(this.myForm.invalid) { return; };
